@@ -137,6 +137,7 @@ class Galaxy {
     const handleLoad = (tex, item, i, list, isPrimary) => {
       tex.colorSpace = THREE.SRGBColorSpace;
       tex.generateMipmaps = true;
+      tex.anisotropy = Math.min(8, this.environment.renderer.capabilities.getMaxAnisotropy());
       const obj = this.environment.addPhoto(tex, i, list.length, isPrimary);
       obj.data = item;
       (isPrimary ? this.state.primaryMediaObjs : this.state.secondaryMediaObjs).push(obj);
