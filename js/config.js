@@ -5,7 +5,7 @@ export const COLORS = {
 };
 
 export const QUALITY = {
-  mobileMultiplier: 0.3
+  mobileMultiplier: 0.65
 };
 
 export const PARTICLE_RANGES = {

@@ -14,8 +14,8 @@ export class World {
     this.qualityMultiplier = qualityMultiplier;
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x2a0f38);
-    this.scene.fog = new THREE.FogExp2(0x2a0f38, 0.00085);
+    this.scene.background = new THREE.Color(0x0b0516);
+    this.scene.fog = new THREE.FogExp2(0x0b0516, 0.00035);
 
     this.camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 2000);
     this.camera.position.set(0, 100, 600);
@@ -107,7 +107,12 @@ export class World {
     bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPos, 3));
     bgGeo.setAttribute('color', new THREE.BufferAttribute(bgCol, 3));
     this.groups.primaryStarfield.add(new THREE.Points(bgGeo, new THREE.PointsMaterial({
-      size: 0.55, vertexColors: true, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
+      size: this.isMobile ? 1.4 : 0.85,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.95,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
     })));
 
     const brCount = Math.floor(1000 * this.qualityMultiplier);
@@ -157,15 +162,44 @@ export class World {
     confGeo.setAttribute('position', new THREE.BufferAttribute(confPos, 3));
     confGeo.setAttribute('color', new THREE.BufferAttribute(confCol, 3));
     this.groups.confetti = new THREE.Points(confGeo, new THREE.PointsMaterial({
-      size: 2.2,
+      size: this.isMobile ? 3.8 : 2.5,
       map: flare,
       vertexColors: true,
       transparent: true,
-      opacity: 0.9,
+      opacity: 0.95,
       blending: THREE.AdditiveBlending,
       depthWrite: false
     }));
     this.scene.add(this.groups.confetti);
+
+    // Soft glowing galaxy nebula clouds (looks rich on both PC and mobile without bloom)
+    const nebCount = Math.floor(80 * this.qualityMultiplier);
+    const nebGeo = new THREE.BufferGeometry();
+    const nebPos = new Float32Array(nebCount * 3);
+    const nebCol = new Float32Array(nebCount * 3);
+    const nebPalette = [0x9b2c78, 0x5c258d, 0xd45d9b, 0x3b4cca, 0xffa726];
+
+    for (let i = 0; i < nebCount; i++) {
+      const r = 40 + Math.random() * 140;
+      const a = Math.random() * Math.PI * 2;
+      nebPos[i * 3] = Math.cos(a) * r;
+      nebPos[i * 3 + 1] = (Math.random() - 0.5) * 60;
+      nebPos[i * 3 + 2] = Math.sin(a) * r;
+      const col = new THREE.Color(nebPalette[i % nebPalette.length]);
+      col.toArray(nebCol, i * 3);
+    }
+    nebGeo.setAttribute('position', new THREE.BufferAttribute(nebPos, 3));
+    nebGeo.setAttribute('color', new THREE.BufferAttribute(nebCol, 3));
+    this.groups.nebula = new THREE.Points(nebGeo, new THREE.PointsMaterial({
+      size: this.isMobile ? 48 : 38,
+      map: flare,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.14,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    }));
+    this.scene.add(this.groups.nebula);
   }
 
   addPhoto(tex, index, total, isPrimary) {
