@@ -1,38 +1,60 @@
 {
   "texts": {
-    "startButton": "Explore Universe",
-    "loaderLoading": "Loading universe...",
-    "loaderReady": "Universe Ready",
-    "introTitle": "Galaxy of Memories",
-    "introSubtitle": "A personal universe of moments, light, and stars",
-    "milestoneTitle": "A milestone worth celebrating",
-    "milestoneSubtitle": "Every step of the journey shines brighter than the last",
-    "turningPointTitle": "Every star tells a story",
-    "turningPointSubtitle": "And this special chapter is dedicated to you",
-    "revealTitle": "Here it is...",
-    "revealSubtitle": "Your own constellation of moments",
-    "photoIndex": "Memory",
-    "finalTitle": "HAPPY BIRTHDAY!",
-    "finalSubtitle": "Wishing you joy, endless blessings, and many more light-years ahead",
-    "endTitle": "MADE WITH LOVE & CODE",
-    "webglFallback": "Hardware rendering is unsupported on this device."
+    "startButton": "Mở Quà Sinh Nhật 🎂",
+    "loaderLoading": "Đang chuẩn bị bầu trời sinh nhật...",
+    "loaderReady": "Sẵn sàng rồi nè vợ yêu ✨",
+    "introTitle": "Chào vợ yêu của anh 💗",
+    "introSubtitle": "Chúc mừng sinh nhật cô gái tuyệt vời nhất",
+    "milestoneTitle": "Lại sang tuổi mới rồi nhé!",
+    "milestoneSubtitle": "Lại lớn tuổi hơn anh rồi kk, thích nhá được làm chị trước mấy tháng 😆",
+    "turningPointTitle": "Bao mùa sinh nhật cùng nhau",
+    "turningPointSubtitle": "Anh vẫn vinh hạnh vì vẫn còn ở đây với em, ủng hộ và hỗ trợ em trên con đường phía trước",
+    "revealTitle": "Tuổi mới thật khí thế nhé ✨",
+    "revealSubtitle": "Con đường đang rất trải hoa rồi — sự nghiệp, tình yêu đều đang rất đẹp nè 🌸",
+    "photoIndex": "Kỷ niệm",
+    "finalTitle": "HAPPY BIRTHDAY VỢ YÊU! 🎂💗",
+    "finalSubtitle": "Yêu Em — Anh Linh Nghiêm",
+    "finalLetter": "Chào vợ yêu của a.\nThế là lại sang tuổi mới lại lớn tuổi hơn a rồi kk thích nhá dc làm chị trc mấy tháng.\nQua bao năm đồng hành trải qua bao mùa sinh nhật r a vẫn vinh hạnh vì vẫn còn ở đây với e ủng hộ và hỗ trợ e trên con đường phía trước đấy, thế nên là cố lên tuổi mới thì phải khí thế con đường đang rất trải hoa rồi sự nghiệp, tình yêu đều đang rất đẹp nè.\nChúc thêm 🤣 cho thêm ý nghĩa nhá: chúc em là sớm gặt dc nhiều kết quả còn đang dang dở, ngày càng xinh hơn, và sớm dc a Linh Nghiêm đón về nhé 😘😘😘💗.\nMón quà ý nghĩa nhất mà ông trời mang lại cho e chính là có được anh đấy 😎😎 kakaka. Yêu Em.\n\n🤣 Nếu vợ muốn tặng hoa súng 🔫 hãy ra tín hiệu đi ạ",
+    "endTitle": "YÊU EM",
+    "webglFallback": "Thiết bị chưa hỗ trợ hiển thị đồ họa 3D (WebGL)."
   },
 
   "audio": {
-    "ambient": { "m4a": "music/galaxi.m4a", "ogg": "music/galaxi.ogg" },
+    "ambient": { "m4a": "music/birthday_ambient.m4a", "ogg": "music/birthday_ambient.ogg" },
     "event":   { "m4a": "music/happy.m4a",  "ogg": "music/happy.ogg" }
   },
 
   "photos": {
     "special": [
-      { "path": "photos/photo_1.webp", "caption": "The beginning of an incredible journey" },
-      { "path": "photos/photo_2.webp", "caption": "Shining bright through every single moment" }
+      { "path": "photos/photo_1.webp", "caption": "" },
+      { "path": "photos/photo_2.webp", "caption": "" }
     ],
     "gallery": [
-      { "path": "photos/photo_3.webp", "caption": "Laughter, happiness, and unforgettable days" },
-      { "path": "photos/photo_4.webp", "caption": "Grateful for all the beautiful memories" },
-      { "path": "photos/photo_5.webp", "caption": "May your path always be filled with light" },
-      { "path": "photos/photo_6.webp", "caption": "To endless joy, blessings, and light-years together" }
+      { "path": "photos/photo_3.webp", "caption": "Sớm gặt hái được nhiều kết quả còn đang dang dở nhé ✨" },
+      { "path": "photos/photo_4.webp", "caption": "" },
+      { "path": "photos/photo_5.webp", "caption": "" },
+      { "path": "photos/photo_6.webp", "caption": "" },
+      { "path": "photos/photo_7.webp", "caption": "" },
+      { "path": "photos/image.png", "caption": "Ngày càng xinh đẹp và rạng rỡ hơn nữa nè 🌸" },
+      { "path": "photos/image copy.png", "caption": "" },
+      { "path": "photos/image copy 2.png", "caption": "" },
+      { "path": "photos/image copy 3.png", "caption": "" },
+      { "path": "photos/image copy 4.png", "caption": "" },
+      { "path": "photos/image copy 5.png", "caption": "Sớm được anh Linh Nghiêm đón về nhé 😘😘😘💗" },
+      { "path": "photos/image copy 6.png", "caption": "" },
+      { "path": "photos/image copy 7.png", "caption": "" },
+      { "path": "photos/image copy 8.png", "caption": "" },
+      { "path": "photos/image copy 9.png", "caption": "" },
+      { "path": "photos/image copy 10.png", "caption": "" },
+      { "path": "photos/image copy 11.png", "caption": "Món quà ý nghĩa nhất của em chính là có được anh đấy 😎😎 kakaka" },
+      { "path": "photos/image copy 12.png", "caption": "" },
+      { "path": "photos/image copy 13.png", "caption": "" },
+      { "path": "photos/image copy 14.png", "caption": "" },
+      { "path": "photos/image copy 15.png", "caption": "" },
+      { "path": "photos/image copy 16.png", "caption": "" },
+      { "path": "photos/image copy 17.png", "caption": "" },
+      { "path": "photos/image copy 18.png", "caption": "" },
+      { "path": "photos/image copy 19.png", "caption": "Yêu Em! 🤣 Nếu vợ muốn tặng hoa súng 🔫 hãy ra tín hiệu đi ạ" }
     ]
   }
 }

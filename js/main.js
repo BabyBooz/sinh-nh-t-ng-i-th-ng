@@ -68,8 +68,17 @@ class Galaxy {
 
     const finalH = this.DOM.finalTitle && this.DOM.finalTitle.querySelector('h1');
     if (finalH) finalH.textContent = t.finalTitle;
-    const finalSub = this.DOM.finalTitle && this.DOM.finalTitle.querySelector('.sub');
+    const finalSub = this.DOM.finalTitle && this.DOM.finalTitle.querySelector('.tag, .sub');
     if (finalSub) finalSub.textContent = t.finalSubtitle;
+    const finalLetter = document.getElementById('final-letter');
+    if (finalLetter) {
+      if (t.finalLetter) {
+        finalLetter.textContent = t.finalLetter;
+        finalLetter.style.display = 'block';
+      } else {
+        finalLetter.style.display = 'none';
+      }
+    }
 
     const endH = this.DOM.endTitle && this.DOM.endTitle.querySelector('h1');
     if (endH) endH.textContent = t.endTitle;

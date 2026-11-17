@@ -26,7 +26,7 @@ export class Timeline {
       const wPos = new THREE.Vector3();
       target.mesh.getWorldPosition(wPos);
       const normal = new THREE.Vector3(0,0,1).applyQuaternion(target.mesh.getWorldQuaternion(new THREE.Quaternion()));
-      const finalPos = wPos.clone().add(normal.multiplyScalar(4.5));
+      const finalPos = wPos.clone().add(normal.multiplyScalar(5.2));
 
       const initLook = new THREE.Vector3();
       this.camera.getWorldDirection(initLook);
@@ -76,36 +76,40 @@ export class Timeline {
     return new Promise(res => {
       this.DOM.photoIndex.textContent = `${this.texts.photoIndex} ${index} · ${total}`;
       this.DOM.photoTextContent.textContent = caption;
-      gsap.fromTo(this.DOM.photoText, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out", onComplete: () => {
-        gsap.to(this.DOM.photoText, { y: -20, opacity: 0, duration: 0.8, delay: 3.5, onComplete: res });
+      gsap.fromTo(this.DOM.photoText, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", onComplete: () => {
+        gsap.to(this.DOM.photoText, { y: -20, opacity: 0, duration: 0.6, delay: 2.2, onComplete: res });
       }});
     });
   }
 
   async run() {
     await this.intro();
-    await this.showText(this.texts.introTitle, this.texts.introSubtitle, 3500);
+    await this.showText(this.texts.introTitle, this.texts.introSubtitle, 3000);
 
-    await this.flyTo(this.state.primaryMediaObjs[0], 3000);
-    await this.showText(this.texts.milestoneTitle, this.texts.milestoneSubtitle, 6000);
-    await this.resetCam(2000);
+    await this.flyTo(this.state.primaryMediaObjs[0], 2500);
+    await this.showText(this.texts.milestoneTitle, this.texts.milestoneSubtitle, 5000);
+    await this.resetCam(1800);
 
-    await this.flyTo(this.state.primaryMediaObjs[1], 3000);
-    await this.showText(this.texts.turningPointTitle, this.texts.turningPointSubtitle, 5000);
-    await this.resetCam(2000);
+    await this.flyTo(this.state.primaryMediaObjs[1], 2500);
+    await this.showText(this.texts.turningPointTitle, this.texts.turningPointSubtitle, 4500);
+    await this.resetCam(1800);
 
-    await this.showText(this.texts.revealTitle, this.texts.revealSubtitle, 3500);
-    await this.orbit(new THREE.Vector3(0,0,0), 30, 12, 8000);
+    await this.showText(this.texts.revealTitle, this.texts.revealSubtitle, 3200);
+    await this.orbit(new THREE.Vector3(0,0,0), 30, 12, 6000);
 
     for (let i = 0; i < this.state.secondaryMediaObjs.length; i++) {
       const item = this.state.secondaryMediaObjs[i];
-      await this.flyTo(item, 2500);
-      await this.showCaption(item.data.caption, i+1, this.state.secondaryMediaObjs.length);
-      await new Promise(r => setTimeout(r, 1000));
-      await this.resetCam(2000);
+      const hasCaption = item.data.caption && item.data.caption.trim().length > 0;
+      await this.flyTo(item, hasCaption ? 1600 : 1000);
+      if (hasCaption) {
+        await this.showCaption(item.data.caption, i+1, this.state.secondaryMediaObjs.length);
+      } else {
+        await new Promise(r => setTimeout(r, 650));
+      }
     }
+    await this.resetCam(1800);
 
-    await this.orbit(new THREE.Vector3(0,0,0), 25, 10, 6000);
+    await this.orbit(new THREE.Vector3(0,0,0), 25, 10, 5000);
     await this.finale();
   }
 
@@ -113,15 +117,21 @@ export class Timeline {
     return new Promise(res => {
       this.state.isSequenceComplete = true;
       const allMedia = [...this.state.primaryMediaObjs, ...this.state.secondaryMediaObjs];
-      gsap.to(this.camera.position, { x:0, y:10, z:50, duration: 3, ease: "power3.inOut", onUpdate: ()=>this.camera.lookAt(0,0,0), onComplete: () => {
-        this.toDots(allMedia).then(() => this.crashIn(allMedia)).then(() => {
-          this.DOM.ambientAudio.pause();
-          this.DOM.eventAudio.volume = 0.8;
-          this.DOM.eventAudio.play().catch(()=>{});
-          this.flash();
-          gsap.fromTo(this.DOM.finalTitle, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 2, ease: "back.out(1.7)" });
-          setTimeout(res, 5000);
-        });
+      gsap.to(this.camera.position, { x:0, y:8, z:50, duration: 2.8, ease: "power3.inOut", onUpdate: ()=>this.camera.lookAt(0,0,0), onComplete: () => {
+        this.toDots(allMedia)
+          .then(() => this.formHeart(allMedia))
+          .then(() => this.crashIn(allMedia))
+          .then(() => {
+            this.DOM.ambientAudio.volume = 0.45;
+            this.DOM.eventAudio.volume = 0.25;
+            this.DOM.eventAudio.play().catch(()=>{});
+            this.DOM.eventAudio.onended = () => {
+              this.DOM.ambientAudio.volume = 0.6;
+            };
+            this.flash();
+            gsap.fromTo(this.DOM.finalTitle, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 2, ease: "back.out(1.7)" });
+            setTimeout(res, 5000);
+          });
       }});
     });
   }
@@ -159,12 +169,57 @@ export class Timeline {
     });
   }
 
+  formHeart(mediaList) {
+    return new Promise(res => {
+      gsap.to(this.mediaGroup.rotation, { x: 0, y: 0, z: 0, duration: 2.2, ease: "power2.inOut" });
+      const n = mediaList.length;
+      const heartColors = [0xff4d88, 0xff75a0, 0xff99bb, 0xffd54f];
+      let done = 0;
+
+      mediaList.forEach((m, i) => {
+        const t = (i / n) * Math.PI * 2;
+        const hx = 16 * Math.pow(Math.sin(t), 3) * 0.85;
+        const hy = (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * 0.85 + 1.5;
+        const hz = (Math.sin(t * 2) * 1.5);
+
+        const targetCol = new THREE.Color(heartColors[i % heartColors.length]);
+        if (m.mesh.material && m.mesh.material.color) {
+          gsap.to(m.mesh.material.color, { r: targetCol.r, g: targetCol.g, b: targetCol.b, duration: 1.5 });
+          gsap.to(m.mesh.material.emissive, { r: targetCol.r, g: targetCol.g, b: targetCol.b, duration: 1.5 });
+        }
+
+        gsap.to(m.mesh.position, {
+          x: hx,
+          y: hy,
+          z: hz,
+          duration: 2.4,
+          ease: "power3.inOut",
+          onComplete: () => {
+            m.originalPosition.set(hx, hy, hz);
+            done++;
+            if (done >= n) {
+              // Hold the glowing heart briefly before bursting into the final letter
+              gsap.to(this.mediaGroup.scale, {
+                x: 1.08, y: 1.08, z: 1.08,
+                duration: 0.7,
+                yoyo: true,
+                repeat: 1,
+                ease: "sine.inOut",
+                onComplete: () => setTimeout(res, 600)
+              });
+            }
+          }
+        });
+      });
+    });
+  }
+
   crashIn(mediaList) {
     return new Promise(res => {
-      gsap.to(this.mediaGroup.rotation, { y: "+=1.5", x: "+=0.5", duration: 4, ease: "power2.inOut" });
+      gsap.to(this.mediaGroup.rotation, { y: "+=0.8", duration: 1.6, ease: "power2.inOut" });
       const proxy = { t: 0 };
       const currentPos = new THREE.Vector3();
-      gsap.to(proxy, { t: 1, duration: 2.5, delay: 1.5, ease: "power3.in", onUpdate: () => {
+      gsap.to(proxy, { t: 1, duration: 1.5, ease: "power3.in", onUpdate: () => {
         mediaList.forEach(m => {
           currentPos.lerpVectors(m.originalPosition, new THREE.Vector3(0,0,0), Math.pow(proxy.t, 3));
           currentPos.add(new THREE.Vector3(m.originalPosition.z, m.originalPosition.y, -m.originalPosition.x).normalize().multiplyScalar(Math.sin(proxy.t*Math.PI)*12));

@@ -14,7 +14,8 @@ export class World {
     this.qualityMultiplier = qualityMultiplier;
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x020005);
+    this.scene.background = new THREE.Color(0x2a0f38);
+    this.scene.fog = new THREE.FogExp2(0x2a0f38, 0.00085);
 
     this.camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 2000);
     this.camera.position.set(0, 100, 600);
@@ -23,6 +24,7 @@ export class World {
       media: new THREE.Group(),
       brightStars: null,
       primaryStarfield: null,
+      confetti: null,
       nebula: null,
       dust: null,
       orbitalLights: []
@@ -46,13 +48,14 @@ export class World {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.isMobile ? 1.0 : 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.1;
     container.appendChild(this.renderer.domElement);
 
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(new RenderPass(this.scene, this.camera));
 
     if (!this.isMobile) {
-      const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.8, 0.2, 0.95);
+      const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.45, 0.25, 1.02);
       this.composer.addPass(bloomPass);
 
       const fxaaPass = new ShaderPass(FXAAShader);
@@ -63,8 +66,8 @@ export class World {
   }
 
   addLights() {
-    this.scene.add(new THREE.AmbientLight(0x220044, 0.5));
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    this.scene.add(new THREE.AmbientLight(0x8844aa, 1.0));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
     dirLight.position.set(10, 10, 5);
     this.scene.add(dirLight);
 
@@ -93,13 +96,18 @@ export class World {
       bgPos[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th);
       bgPos[i * 3 + 2] = r * Math.cos(ph);
 
-      const c = new THREE.Color().setHSL(0.6 + Math.random() * 0.1, 0.2 + Math.random() * 0.3, 0.7 + Math.random() * 0.3);
+      const hueChoice = Math.random();
+      const c = hueChoice < 0.45
+        ? new THREE.Color().setHSL(0.9 + Math.random() * 0.08, 0.55 + Math.random() * 0.3, 0.72 + Math.random() * 0.22)
+        : hueChoice < 0.8
+          ? new THREE.Color().setHSL(0.1 + Math.random() * 0.05, 0.65 + Math.random() * 0.25, 0.7 + Math.random() * 0.25)
+          : new THREE.Color().setHSL(0.75 + Math.random() * 0.08, 0.4 + Math.random() * 0.3, 0.75 + Math.random() * 0.2);
       c.toArray(bgCol, i * 3);
     }
     bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPos, 3));
     bgGeo.setAttribute('color', new THREE.BufferAttribute(bgCol, 3));
     this.groups.primaryStarfield.add(new THREE.Points(bgGeo, new THREE.PointsMaterial({
-      size: 0.3, vertexColors: true, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false
+      size: 0.55, vertexColors: true, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false
     })));
 
     const brCount = Math.floor(1000 * this.qualityMultiplier);
@@ -130,6 +138,34 @@ export class World {
     this.groups.brightStars = new THREE.Points(brGeo, brMat);
     this.groups.primaryStarfield.add(this.groups.brightStars);
     this.scene.add(this.groups.primaryStarfield);
+
+    // Floating festive birthday bokeh / confetti particles
+    const confCount = Math.floor(600 * this.qualityMultiplier);
+    const confGeo = new THREE.BufferGeometry();
+    const confPos = new Float32Array(confCount * 3);
+    const confCol = new Float32Array(confCount * 3);
+    const palette = [0xff6b9d, 0xffd54f, 0xff8a65, 0xce93d8, 0x80deea];
+
+    for (let i = 0; i < confCount; i++) {
+      confPos[i * 3] = (Math.random() - 0.5) * 180;
+      confPos[i * 3 + 1] = (Math.random() - 0.5) * 140;
+      confPos[i * 3 + 2] = (Math.random() - 0.5) * 180;
+      const col = new THREE.Color(palette[i % palette.length]);
+      col.toArray(confCol, i * 3);
+    }
+
+    confGeo.setAttribute('position', new THREE.BufferAttribute(confPos, 3));
+    confGeo.setAttribute('color', new THREE.BufferAttribute(confCol, 3));
+    this.groups.confetti = new THREE.Points(confGeo, new THREE.PointsMaterial({
+      size: 2.2,
+      map: flare,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.9,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    }));
+    this.scene.add(this.groups.confetti);
   }
 
   addPhoto(tex, index, total, isPrimary) {
@@ -148,6 +184,10 @@ export class World {
     if (this.groups.primaryStarfield) {
       this.groups.primaryStarfield.rotation.y += dt * 0.01;
       this.groups.primaryStarfield.rotation.x += dt * 0.005;
+    }
+    if (this.groups.confetti) {
+      this.groups.confetti.rotation.y -= dt * 0.025;
+      this.groups.confetti.position.y = Math.sin(t * 0.4) * 3;
     }
 
     if (!state.isCameraZoomed) this.groups.media.rotation.y += dt * 0.04;
